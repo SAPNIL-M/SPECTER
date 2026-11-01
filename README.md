@@ -98,6 +98,19 @@ Judges can verify complete privacy and offline operation:
 
 ---
 
+## 🛠️ Model Calibration & Challenges Faced
+
+During initial development, running `DistilBERT-SST-2` in conversational contexts revealed classic domain-adaptation edge cases:
+- **Negative Questions Misclassified as Positive:** Questions like `"Why won't you die?"` initially confused the SST-2 sentiment model (trained on Rotten Tomatoes movie reviews), scoring as `POSITIVE (73.0%)` and misrouting to `FEAR`.
+- **Vulnerability Confused for Hostility:** Genuine expressions of sadness (`"I feel lonely"`) scored 99.9% negative, causing an early heuristic to mistakenly flag the input as `HOSTILITY` rather than `EMPATHY`.
+
+### How We Solved It
+1. **Conversational Valence Calibration:** Added a lightweight rule-guided calibration pass in `specter-ai.js` to normalize conversational sentiment polarities.
+2. **Prioritized Frequency Hierarchy:** Elevated `EMPATHY` (loneliness, sorrow, connection) to top priority before generic sentiment evaluation, while decoupling defiance (`HOSTILITY`) from dread (`FEAR`).
+3. **Anti-Repetition & Dynamic Interpolation:** Implemented state memory so the ghost never repeats identical lore strings sequentially, and dynamically reflects actual model confidence scores in its dialogue.
+
+---
+
 ## 📜 License
 
 MIT License — Built with pride for open innovation and the Hacktoberfest 2026 DEV Community Challenge.

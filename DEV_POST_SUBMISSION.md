@@ -112,6 +112,23 @@ Using pure CSS3:
 
 ---
 
+## 🛠️ Challenges & Edge Cases: When the Model Confused "Lonely" for "Hostile"
+
+No hackathon build is without its ghost bugs! While stress-testing the neural pipeline, we encountered an intriguing domain-adaptation challenge with `DistilBERT-SST-2`:
+
+### 1. The Movie Review Domain Mismatch
+`distilbert-base-uncased-finetuned-sst-2-english` was trained on the Stanford Sentiment Treebank (film reviews). When applied to live, conversational terminal interactions, certain phrasing tripped up raw polarity:
+- **`"Why won't you die?"`**: The model initially classified this inquiry as `POSITIVE (73.0%)` and routed it to `FEAR` because `"die"` was originally mapped to mortal dread rather than active hostility.
+- **`"I feel lonely"`**: The model correctly flagged this as `NEGATIVE (99.9%)`. However, our early heuristic had a blanket rule: *(if negative confidence > 85%, assign HOSTILITY)*. Because that rule fired before the empathy check, the ghost aggressively scolded a lonely user for being hostile!
+
+### 2. The Fix: Conversational Valence Calibration & Semantic Priority
+To resolve this without bloating download size:
+1. **Calibration Layer (`calibratePolarity`)**: We added a lightweight conversational polarity layer in `specter-ai.js` that calibrates sentiment for queries containing negative auxiliary verbs and existential queries.
+2. **Strict Semantic Hierarchy**: Empathy and vulnerability (`lonely`, `alone`, `sad`, `grief`) now take top priority over generic negative polarity. Hostility (`kill`, `die`, `won't you die`, `shut up`) is strictly decoupled from existential fear (`scared`, `terrified`, `horror`).
+3. **Contextual Dialogue & Anti-Repetition**: We wired dynamic confidence scores into the ghost's responses and added a conversational memory buffer so consecutive queries never repeat the same response.
+
+---
+
 ## 👻 Try It Yourself!
 
 Check out the live demo here: **[SPECTER Live Terminal](https://sapnil-m.github.io/SPECTER/)**
