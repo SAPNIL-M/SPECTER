@@ -11,6 +11,8 @@ Submitted for the **DEV Community Hacktoberfest Challenge: "Ghost in the Machine
 - 🟢 **Live Demo:** [https://sapnil-m.github.io/SPECTER/](https://sapnil-m.github.io/SPECTER/)
 - 💻 **Source Code:** [https://github.com/SAPNIL-M/SPECTER](https://github.com/SAPNIL-M/SPECTER)
 
+![SPECTER CRT Terminal](docs/01-boot-terminal.png)
+
 ---
 
 ## 🌟 Key Highlights
