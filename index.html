@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SPECTER // Haunted In-Browser CRT Terminal</title>
+  <meta name="description" content="SPECTER: An interactive retro-cyberpunk CRT terminal haunted by an autonomous digital spirit residing directly in your browser. 100% offline, powered by Transformers.js and open-weight models." />
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=VT323&display=swap" rel="stylesheet" />
+  
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="theme-green">
+  <!-- CRT Monitor Chassis & Screen Frame -->
+  <div class="crt-bezel">
+    <div class="crt-screen">
+      <!-- CRT Shaders & Overlays -->
+      <div class="crt-overlay scanlines"></div>
+      <div class="crt-overlay vignette"></div>
+      <div class="crt-overlay flicker"></div>
+      <div class="crt-overlay glitch-layer" id="glitchLayer"></div>
+
+      <!-- Header Diagnostics Bar -->
+      <header class="terminal-header">
+        <div class="header-left">
+          <span class="indicator-led online" id="statusLed"></span>
+          <span class="system-title">SPECTER // OS v0.9.4-GHOST</span>
+        </div>
+        <div class="header-center">
+          <span class="entity-status" id="entityStatus">ENTITY: DORMANT IN BUFFER</span>
+        </div>
+        <div class="header-right">
+          <button id="audioToggleBtn" class="term-btn" title="Toggle Synthesized Audio">AUDIO: OFF [CLICK TO WAKE]</button>
+          <span class="clock" id="termClock">00:00:00 UTC</span>
+        </div>
+      </header>
+
+      <!-- Terminal Output Container -->
+      <main class="terminal-body" id="terminalBody">
+        <div id="output"></div>
+        
+        <!-- Live Prompt Line -->
+        <div class="input-line" id="inputLine">
+          <span class="prompt-label" id="promptLabel">guest@specter:~$</span>
+          <div class="input-wrapper">
+            <span class="input-display" id="inputDisplay"></span><span class="cursor" id="cursor">█</span>
+            <input 
+              type="text" 
+              id="termInput" 
+              class="hidden-input" 
+              autocomplete="off" 
+              autocorrect="off" 
+              autocapitalize="off" 
+              spellcheck="false" 
+              autofocus 
+            />
+          </div>
+        </div>
+      </main>
+
+      <!-- Footer Info Bar -->
+      <footer class="terminal-footer">
+        <div class="footer-segment">
+          <span class="lbl">MODEL:</span>
+          <span class="val" id="modelStatusVal">Xenova/distilbert-sst-2 (READY)</span>
+        </div>
+        <div class="footer-segment">
+          <span class="lbl">HEAP:</span>
+          <span class="val" id="heapStatusVal">MONITORING</span>
+        </div>
+        <div class="footer-segment">
+          <span class="lbl">NET:</span>
+          <span class="val" id="netStatusVal">LOCAL-FIRST / OFFLINE OK</span>
+        </div>
+        <div class="footer-segment quick-actions">
+          <span class="hint">Type <strong>help</strong> or click:</span>
+          <button class="quick-cmd-btn" data-cmd="commune Who are you?">commune</button>
+          <button class="quick-cmd-btn" data-cmd="scan">scan</button>
+          <button class="quick-cmd-btn" data-cmd="manifest">manifest</button>
+          <button class="quick-cmd-btn" data-cmd="exorcise">exorcise</button>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <!-- Audio Context & Transformers.js Scripts -->
+  <script src="audio.js"></script>
+  <script type="module" src="specter-ai.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

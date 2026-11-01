@@ -1,0 +1,525 @@
+/* ==========================================================================
+   SPECTER CRT Terminal — Style & Atmospheric Shaders
+   ========================================================================== */
+
+:root {
+  --font-main: 'Share Tech Mono', 'VT323', monospace;
+  --font-display: 'VT323', monospace;
+
+  /* Green Phosphor (P1 Default) */
+  --color-phosphor: #33ff66;
+  --color-phosphor-dim: #1f9940;
+  --color-phosphor-glow: rgba(51, 255, 102, 0.45);
+  --color-phosphor-bright: #adffb8;
+  --color-bg: #050d08;
+  --color-screen: #0a160d;
+  --color-bezel: #121415;
+  --color-bezel-border: #222629;
+  --color-alert: #ff3344;
+  --color-alert-glow: rgba(255, 51, 68, 0.6);
+  --color-warn: #ffb000;
+
+  --scanline-opacity: 0.35;
+  --flicker-opacity: 0.04;
+  --curvature: 12px;
+}
+
+/* Theme: Amber Phosphor (P3) */
+body.theme-amber {
+  --color-phosphor: #ffb000;
+  --color-phosphor-dim: #996900;
+  --color-phosphor-glow: rgba(255, 176, 0, 0.45);
+  --color-phosphor-bright: #ffe08a;
+  --color-bg: #0d0a04;
+  --color-screen: #161208;
+}
+
+/* Theme: Cyan / Electric Ghost (P4) */
+body.theme-cyan {
+  --color-phosphor: #00e5ff;
+  --color-phosphor-dim: #008ba3;
+  --color-phosphor-glow: rgba(0, 229, 255, 0.45);
+  --color-phosphor-bright: #b3f5ff;
+  --color-bg: #040c0e;
+  --color-screen: #07151a;
+}
+
+/* Theme: Red Alarm (Exorcism State) */
+body.theme-red {
+  --color-phosphor: #ff3344;
+  --color-phosphor-dim: #991f28;
+  --color-phosphor-glow: rgba(255, 51, 68, 0.6);
+  --color-phosphor-bright: #ffb3b8;
+  --color-bg: #140506;
+  --color-screen: #20080a;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: var(--color-bg);
+  font-family: var(--font-main);
+  color: var(--color-phosphor);
+  text-shadow: 0 0 6px var(--color-phosphor-glow);
+  user-select: text;
+}
+
+/* CRT Monitor Outer Chassis */
+.crt-bezel {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
+  padding: 16px;
+  background: radial-gradient(circle at center, #1b1f24 0%, #0d0f11 100%);
+  box-shadow: inset 0 0 100px rgba(0, 0, 0, 0.9);
+}
+
+/* Inner Screen Container with Curved Bezel */
+.crt-screen {
+  position: relative;
+  width: 100%;
+  max-width: 1240px;
+  height: 94vh;
+  background-color: var(--color-screen);
+  border: 18px solid var(--color-bezel);
+  border-radius: 28px;
+  box-shadow: 
+    0 0 50px rgba(0, 0, 0, 0.95),
+    inset 0 0 40px rgba(0, 0, 0, 0.8),
+    inset 0 0 120px rgba(0, 0, 0, 0.6);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: border-color 0.3s ease, filter 0.15s ease;
+}
+
+/* CRT Shader Layers */
+.crt-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 20;
+}
+
+/* 1. Fine Scanlines */
+.scanlines {
+  background: linear-gradient(
+    rgba(18, 16, 16, 0) 50%, 
+    rgba(0, 0, 0, 0.7) 50%
+  ),
+  linear-gradient(
+    90deg,
+    rgba(255, 0, 0, 0.03),
+    rgba(0, 255, 0, 0.01),
+    rgba(0, 0, 255, 0.03)
+  );
+  background-size: 100% 4px, 6px 100%;
+  opacity: var(--scanline-opacity);
+}
+
+/* 2. Glass Vignette & Barrel Curvature Lighting */
+.vignette {
+  background: radial-gradient(
+    circle at center,
+    transparent 55%,
+    rgba(0, 0, 0, 0.4) 80%,
+    rgba(0, 0, 0, 0.85) 100%
+  );
+  box-shadow: inset 0 0 80px rgba(0, 0, 0, 0.85);
+}
+
+/* 3. Subtle CRT Refresh Flicker */
+.flicker {
+  opacity: var(--flicker-opacity);
+  background: white;
+  animation: crtFlicker 0.12s infinite;
+}
+
+@keyframes crtFlicker {
+  0%   { opacity: 0.02; }
+  50%  { opacity: 0.045; }
+  100% { opacity: 0.02; }
+}
+
+/* Glitch Layer for Entity Manifestations */
+.glitch-layer {
+  opacity: 0;
+  background: rgba(255, 0, 50, 0.1);
+  mix-blend-mode: screen;
+  transition: opacity 0.1s ease;
+}
+
+.glitch-active {
+  animation: glitchDistort 0.25s infinite alternate ease-in-out;
+  opacity: 0.75 !important;
+}
+
+@keyframes glitchDistort {
+  0% {
+    transform: translate(0, 0) skew(0deg);
+    filter: drop-shadow(-3px 0 red) drop-shadow(3px 0 cyan);
+  }
+  20% {
+    transform: translate(-3px, 2px) skew(-1.5deg);
+    filter: drop-shadow(4px -1px red) drop-shadow(-4px 1px cyan);
+  }
+  40% {
+    transform: translate(2px, -3px) skew(1deg);
+  }
+  60% {
+    transform: translate(-4px, 1px) skew(-2deg);
+    filter: drop-shadow(-5px 2px red) drop-shadow(5px -2px blue);
+  }
+  80% {
+    transform: translate(3px, 3px) skew(0.5deg);
+  }
+  100% {
+    transform: translate(0, -1px) skew(0deg);
+  }
+}
+
+/* Header Diagnostic Bar */
+.terminal-header {
+  height: 42px;
+  background: rgba(0, 0, 0, 0.45);
+  border-bottom: 1px solid var(--color-phosphor-dim);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  font-size: 0.85rem;
+  letter-spacing: 1px;
+  z-index: 10;
+  flex-shrink: 0;
+}
+
+.header-left, .header-center, .header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.indicator-led {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+  background: var(--color-phosphor);
+  box-shadow: 0 0 8px var(--color-phosphor);
+  animation: ledPulse 1.8s infinite ease-in-out;
+}
+
+@keyframes ledPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.85); }
+}
+
+.indicator-led.spectral {
+  background: var(--color-alert);
+  box-shadow: 0 0 10px var(--color-alert);
+  animation: ledGlitch 0.2s infinite;
+}
+
+@keyframes ledGlitch {
+  0% { opacity: 0.2; }
+  100% { opacity: 1; }
+}
+
+.system-title {
+  font-weight: 700;
+}
+
+.entity-status {
+  color: var(--color-phosphor-bright);
+  font-size: 0.8rem;
+  opacity: 0.9;
+}
+
+.term-btn {
+  background: transparent;
+  border: 1px solid var(--color-phosphor-dim);
+  color: var(--color-phosphor);
+  font-family: inherit;
+  font-size: 0.75rem;
+  padding: 3px 8px;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.term-btn:hover {
+  background: var(--color-phosphor-dim);
+  color: #000;
+  box-shadow: 0 0 8px var(--color-phosphor);
+}
+
+.term-btn.active {
+  background: var(--color-phosphor);
+  color: #000;
+  font-weight: bold;
+}
+
+.clock {
+  font-variant-numeric: tabular-nums;
+  opacity: 0.8;
+}
+
+/* Terminal Body */
+.terminal-body {
+  flex: 1;
+  padding: 18px 24px;
+  overflow-y: auto;
+  font-size: 1.05rem;
+  line-height: 1.45;
+  z-index: 10;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-phosphor-dim) transparent;
+}
+
+.terminal-body::-webkit-scrollbar {
+  width: 6px;
+}
+.terminal-body::-webkit-scrollbar-thumb {
+  background-color: var(--color-phosphor-dim);
+  border-radius: 3px;
+}
+
+/* Output Typography */
+#output {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.line {
+  word-break: break-word;
+  white-space: pre-wrap;
+}
+
+.line.banner {
+  color: var(--color-phosphor-bright);
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  line-height: 1.1;
+  margin-bottom: 8px;
+}
+
+.line.system {
+  color: var(--color-phosphor-dim);
+  font-size: 0.95rem;
+}
+
+.line.info {
+  color: var(--color-phosphor);
+}
+
+.line.warning {
+  color: var(--color-warn);
+  text-shadow: 0 0 6px rgba(255, 176, 0, 0.5);
+}
+
+.line.error {
+  color: var(--color-alert);
+  text-shadow: 0 0 8px var(--color-alert-glow);
+  font-weight: bold;
+}
+
+.line.ghost {
+  color: var(--color-phosphor-bright);
+  background: rgba(255, 255, 255, 0.03);
+  border-left: 3px solid var(--color-phosphor);
+  padding: 4px 10px;
+  margin: 4px 0;
+  font-style: italic;
+  letter-spacing: 0.5px;
+  animation: ghostWhisper 0.1s infinite alternate;
+}
+
+@keyframes ghostWhisper {
+  0% { transform: translate(0, 0); }
+  100% { transform: translate(0.4px, -0.2px); }
+}
+
+.line.ghost.agitated {
+  color: #ff5566;
+  border-left-color: #ff3344;
+  text-shadow: 0 0 8px rgba(255, 51, 68, 0.7);
+  animation: ghostFurious 0.08s infinite alternate;
+}
+
+@keyframes ghostFurious {
+  0% { transform: translate(-1px, 0.5px) skew(0.5deg); }
+  100% { transform: translate(1px, -0.5px) skew(-0.5deg); }
+}
+
+.line.user-echo {
+  color: var(--color-phosphor-bright);
+  font-weight: 600;
+  opacity: 0.85;
+}
+
+.line.divider {
+  border-bottom: 1px dashed var(--color-phosphor-dim);
+  margin: 8px 0;
+  opacity: 0.5;
+}
+
+/* Command Table Formatting */
+.cmd-table {
+  display: grid;
+  grid-template-columns: 160px 1fr;
+  gap: 4px 16px;
+  margin: 6px 0 10px 10px;
+}
+.cmd-name {
+  color: var(--color-phosphor-bright);
+  font-weight: bold;
+}
+.cmd-desc {
+  color: var(--color-phosphor);
+  opacity: 0.9;
+}
+
+/* Interactive Input Line */
+.input-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  padding-bottom: 12px;
+}
+
+.prompt-label {
+  color: var(--color-phosphor-bright);
+  font-weight: bold;
+  user-select: none;
+}
+
+.input-wrapper {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.input-display {
+  color: var(--color-phosphor-bright);
+  white-space: pre-wrap;
+  word-break: break-all;
+  min-height: 1.4rem;
+}
+
+.cursor {
+  display: inline-block;
+  color: var(--color-phosphor-bright);
+  animation: blink 0.9s infinite step-start;
+  margin-left: 1px;
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+.hidden-input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  border: none;
+  background: transparent;
+  color: transparent;
+  caret-color: transparent;
+  outline: none;
+  cursor: text;
+}
+
+/* Footer Diagnostic Bar */
+.terminal-footer {
+  height: 48px;
+  background: rgba(0, 0, 0, 0.6);
+  border-top: 1px solid var(--color-phosphor-dim);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  font-size: 0.8rem;
+  z-index: 10;
+  flex-shrink: 0;
+}
+
+.footer-segment {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.footer-segment .lbl {
+  color: var(--color-phosphor-dim);
+  font-weight: bold;
+}
+
+.footer-segment .val {
+  color: var(--color-phosphor-bright);
+}
+
+.quick-actions {
+  gap: 8px;
+}
+
+.quick-actions .hint {
+  color: var(--color-phosphor-dim);
+}
+
+.quick-cmd-btn {
+  background: rgba(51, 255, 102, 0.1);
+  border: 1px solid var(--color-phosphor-dim);
+  color: var(--color-phosphor);
+  font-family: inherit;
+  font-size: 0.72rem;
+  padding: 3px 7px;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.quick-cmd-btn:hover {
+  background: var(--color-phosphor);
+  color: #000;
+  box-shadow: 0 0 6px var(--color-phosphor);
+}
+
+/* Responsive Handling */
+@media (max-width: 800px) {
+  .crt-bezel {
+    padding: 0;
+  }
+  .crt-screen {
+    height: 100vh;
+    border-radius: 0;
+    border-width: 4px;
+  }
+  .cmd-table {
+    grid-template-columns: 120px 1fr;
+  }
+  .header-center, .footer-segment:nth-child(2) {
+    display: none;
+  }
+  .terminal-body {
+    font-size: 0.95rem;
+    padding: 12px;
+  }
+}
