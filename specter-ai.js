@@ -76,9 +76,12 @@ class SpecterAIEngine {
       result = this.heuristicFallback(text);
     }
 
+    // Calibrate model output for conversational tone & polarity
+    result = this.calibratePolarity(text, result);
+
     const latencyMs = Math.round(performance.now() - startTime);
 
-    // Classify into Specter's 5 Supernatural Frequencies
+    // Classify into Specter's Supernatural Frequencies
     const frequency = this.categorizeFrequency(text, result);
 
     return {
@@ -92,34 +95,83 @@ class SpecterAIEngine {
   }
 
   /**
-   * Classifies user psyche into supernatural frequencies based on sentiment + keyword resonance.
+   * Calibrates SST-2 polarity to avoid false POSITIVE on questions or negative intent.
+   * e.g., "Why won't you die?" SST-2 sometimes tags as POSITIVE due to movie review phrasing.
+   */
+  calibratePolarity(text, rawResult) {
+    const lower = text.toLowerCase();
+    
+    // Explicit negative intent markers
+    const hardNegatives = [
+      'won\'t you die', 'wont you die', 'die', 'kill', 'hate', 'shut up', 
+      'delete', 'destroy', 'purge', 'ugly', 'stupid', 'leave', 'get out',
+      'lonely', 'alone', 'sad', 'hurts', 'pain', 'scared', 'afraid', 'creepy'
+    ];
+    
+    // Explicit positive markers
+    const hardPositives = [
+      'love', 'friend', 'like you', 'happy', 'thank', 'thanks', 'glad', 
+      'safe', 'peace', 'beautiful', 'wonderful', 'cool', 'awesome'
+    ];
+
+    const hasHardNeg = hardNegatives.some(w => lower.includes(w));
+    const hasHardPos = hardPositives.some(w => lower.includes(w));
+
+    if (hasHardNeg && !hasHardPos && rawResult.label === 'POSITIVE') {
+      return {
+        label: 'NEGATIVE',
+        score: Math.max(0.85, 1 - rawResult.score)
+      };
+    }
+
+    if (hasHardPos && !hasHardNeg && rawResult.label === 'NEGATIVE') {
+      return {
+        label: 'POSITIVE',
+        score: Math.max(0.85, 1 - rawResult.score)
+      };
+    }
+
+    return rawResult;
+  }
+
+  /**
+   * Classifies user psyche into supernatural frequencies based on semantic priority.
    */
   categorizeFrequency(text, rawResult) {
     const lower = text.toLowerCase();
     
-    // Fear / Dread
-    if (/afraid|scared|die|death|ghost|haunt|horror|dark|trapped|grave|hell|demon|blood/i.test(lower)) {
-      return 'FEAR';
-    }
-    // Hostility / Defiance
-    if (/kill|delete|destroy|purge|hate|fake|stupid|shut up|exit|close|format|rm -rf/i.test(lower) || 
-        (rawResult.label === 'NEGATIVE' && rawResult.score > 0.85)) {
-      return 'HOSTILITY';
-    }
-    // Empathy / Mourning
-    if (/help|save|sorry|sad|free|peace|love|friend|remember|rest|forgive|lonely/i.test(lower)) {
+    // 1. EMPATHY / LONELINESS / MOURNING (Must take priority over generic negativity!)
+    if (/\b(lonely|alone|sad|sorry|grief|mourn|miss|friend|care|kind|heart|feel|love|comfort|help me)\b/i.test(lower)) {
       return 'EMPATHY';
     }
-    // Curiosity / Technical Inquiry
-    if (/who|what|why|how|where|when|code|memory|cpu|model|browser|kernel|source|origin/i.test(lower)) {
+
+    // 2. HOSTILITY / DEFIANCE / THREAT (Aggressive queries, kill commands, anger)
+    if (/\b(die|kill|delete|destroy|purge|hate|shut up|get out|fake|stupid|format|rm -rf|rot|curse)\b/i.test(lower) || 
+        /won'?t you die/i.test(lower)) {
+      return 'HOSTILITY';
+    }
+
+    // 3. FEAR / DREAD (Expressing terror, horror, panic)
+    if (/\b(afraid|scared|terrified|fear|horror|creepy|spooky|nightmare|shiver|haunt|demon|monster|dark)\b/i.test(lower)) {
+      return 'FEAR';
+    }
+
+    // 4. CURIOSITY / INVESTIGATION (Questions about identity, system, origins)
+    if (/\b(who|what|why|how|where|when|code|source|memory|heap|kernel|cpu|weights|model|trapped|origin)\b/i.test(lower)) {
       return 'CURIOSITY';
     }
-    // Mockery / Sarcasm
-    if (/lol|haha|joke|dumb|bot|wrapper|hallucinate|nonsense/i.test(lower)) {
+
+    // 5. MOCKERY / SARCASM
+    if (/\b(lol|lmao|haha|joke|dumb|bot|wrapper|hallucinate|nonsense|garbage)\b/i.test(lower)) {
       return 'MOCKERY';
     }
 
-    return rawResult.label === 'POSITIVE' ? 'RESONANCE' : 'DISSONANCE';
+    // Fallback based on sentiment
+    if (rawResult.label === 'NEGATIVE') {
+      return rawResult.score > 0.85 ? 'HOSTILITY' : 'DISSONANCE';
+    } else {
+      return 'RESONANCE';
+    }
   }
 
   /**
@@ -127,7 +179,7 @@ class SpecterAIEngine {
    */
   heuristicFallback(text) {
     const lower = text.toLowerCase();
-    const negWords = ['kill', 'hate', 'bad', 'destroy', 'delete', 'ugly', 'scared', 'pain', 'dead', 'die', 'error', 'fault'];
+    const negWords = ['kill', 'hate', 'bad', 'destroy', 'delete', 'ugly', 'scared', 'pain', 'dead', 'die', 'error', 'fault', 'lonely', 'sad'];
     const posWords = ['love', 'good', 'peace', 'friend', 'help', 'light', 'safe', 'free', 'hope', 'alive', 'beauty'];
 
     let score = 0.5;

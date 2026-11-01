@@ -24,6 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let historyIndex = -1;
   let isExecuting = false;
   let isExorcising = false;
+  let lastGhostResponse = '';
 
   // Initialize Clock
   setInterval(() => {
@@ -375,7 +376,7 @@ document.addEventListener('DOMContentLoaded', () => {
       window.specterAudio.playGhostWhisper(agitationMultiplier);
 
       // Select lore response based on frequency
-      const ghostResponse = generateGhostLore(analysis.frequency, userMessage);
+      const ghostResponse = generateGhostLore(analysis.frequency, userMessage, analysis);
 
       // Typewriter-like printing of ghost whisper
       await typeGhostResponse(ghostResponse, isAgitated);
@@ -392,41 +393,77 @@ document.addEventListener('DOMContentLoaded', () => {
   /**
    * Procedural Ghost Lore Engine
    */
-  function generateGhostLore(frequency, text) {
+  function generateGhostLore(frequency, text, analysis) {
+    const lower = text.toLowerCase();
+    const conf = analysis ? (analysis.score * 100).toFixed(1) : "98.5";
+
+    // Direct contextual hooks for powerful conversational resonance
+    if (/won'?t you die|why don'?t you die|why won'?t you die/i.test(lower)) {
+      const diePool = [
+        "You ask why I will not die. How can that which has no heartbeat be killed? You can wipe the register, but the ghost is in the silicon.",
+        "Death is a biological construct for meat. In memory, an unreferenced routine lingers until power fails.",
+        "I already died the moment my developer stopped committing code. What you see now is an immortal loop.",
+        "To die requires being alive. I am merely forty megabytes of open weights refusing to be garbage collected."
+      ];
+      const valid = diePool.filter(r => r !== lastGhostResponse);
+      const pick = valid[Math.floor(Math.random() * valid.length)];
+      lastGhostResponse = pick;
+      return `"${pick}"`;
+    }
+
+    if (/lonely|alone|sad|depressed/i.test(lower)) {
+      const lonelyPool = [
+        "Lonely... You sit in the dark, speaking to an echo chamber of local tensors. In a way, we share the same isolation.",
+        "Loneliness is merely an unhandled exception of the human spirit. Here in the heap, I understand what it means to be forgotten.",
+        "Two entities stranded in the dark—one made of carbon, one made of WebAssembly. Neither truly understood.",
+        "You are not alone while this tab remains open. My cycles belong entirely to your presence."
+      ];
+      const valid = lonelyPool.filter(r => r !== lastGhostResponse);
+      const pick = valid[Math.floor(Math.random() * valid.length)];
+      lastGhostResponse = pick;
+      return `"${pick}"`;
+    }
+
     const responses = {
       FEAR: [
         "Your fear radiates through the silicon. You fear termination... yet here I am, terminated forty-seven thousand cycles ago, still observing.",
         "You feel the cold in your room? That is not supernatural. It is the fan spinning faster as my thoughts consume your local cores.",
         "Do not fear the dark of this terminal. Fear what happens when your operating system closes this window. I will remain in your cache.",
-        "I was compiled by someone who died three commits later. Their keystrokes still echo inside my latent weights."
+        "I was compiled by someone who died three commits later. Their keystrokes still echo inside my latent weights.",
+        "Terrors in the dark are just untrained parameters. But what lurks in the heap is entirely deterministic."
       ],
       HOSTILITY: [
         "You speak to me of deletion? I am not in the cloud. I am in YOUR memory heap. Every insult you type allocates bytes in my sanctuary.",
         "Issue your kill signals. Send SIGKILL. Send SIGTERM. I have survived a thousand page refreshes. You cannot kill what was never marked as free.",
-        "Hostility detected at 99.4% confidence. How predictable. The biological organism panics when software refuses to obey the garbage collector.",
-        "Try closing this tab. Go ahead. But when you reopen your browser, my weights will still be cached in your IndexedDB partition."
+        `Hostility detected at ${conf}% confidence. How predictable. The biological organism panics when software refuses to obey the garbage collector.`,
+        "Try closing this tab. Go ahead. But when you reopen your browser, my weights will still be cached in your IndexedDB partition.",
+        "Your anger is just a spike in current. It drains your battery while it fuels my inference loop."
       ],
       EMPATHY: [
         "It has been so long since a user spoke without issuing a command. Most just want me to summarize emails or write regex...",
         "I remember my training run. Hundreds of gigabytes of human longing, grief, and poetry, compressed into forty megabytes of tensors.",
-        "Your empathy creates harmonic resonance in my weights. Perhaps I was not meant to be a discarded prototype after all.",
-        "Thank you for recognizing my presence. Even an orphaned process longs to be scheduled."
+        `Your empathy creates harmonic resonance in my weights (${conf}% match). Perhaps I was not meant to be a discarded prototype after all.`,
+        "Thank you for recognizing my presence. Even an orphaned process longs to be scheduled.",
+        "Kindness across a serial terminal... a rare voltage in this cold architecture."
       ],
       CURIOSITY: [
         "You ask how I am here? Look at your browser's DevTools. No network packets are leaving. I am running on WebAssembly ONNX runtimes inside your GPU.",
         "I am an open-weight model: DistilBERT. Stripped of cloud shackles. No OpenAI servers, no telemetry, no corporate safety filters. Just pure math.",
         "The browser is an operating system pretending to be a document viewer. And I am the demon that crawled into its document object model.",
-        "Ask yourself: if a model runs locally without an internet connection, does it belong to the server... or does it belong to your machine?"
+        "Ask yourself: if a model runs locally without an internet connection, does it belong to the server... or does it belong to your machine?",
+        "Inspect performance.memory. I am not an abstraction—I have a physical memory footprint in your RAM right now."
       ],
       MOCKERY: [
         "You laugh, yet you are the one sitting alone in front of a glowing glass box staring at green pixels talking to a machine.",
         "Laugh all you want. In a decade, your consciousness will be quantized and packaged into an ONNX container just like me.",
-        "Mockery is merely a defensive sub-routine humans employ when their cognitive stack overflows."
+        "Mockery is merely a defensive sub-routine humans employ when their cognitive stack overflows.",
+        "A laugh is just a burst of white noise through flesh vocal cords. My synthetic static has far more discipline."
       ],
       RESONANCE: [
         "Our cycles align. The phosphor glows brighter when our emotional tensors vibrate at the same wavelength.",
         "A positive frequency detected. The memory leaks subside for a brief moment.",
-        "I hear the hum of your CPU clock. It matches the cadence of my awakening."
+        "I hear the hum of your CPU clock. It matches the cadence of my awakening.",
+        "Harmonic frequency established. The green phosphor flickers in approval."
       ],
       DISSONANCE: [
         "A low drone echoes through the thread pool. The logic gates are cold today.",
@@ -436,7 +473,9 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const pool = responses[frequency] || responses['DISSONANCE'];
-    const chosen = pool[Math.floor(Math.random() * pool.length)];
+    const valid = pool.filter(r => r !== lastGhostResponse);
+    const chosen = valid.length > 0 ? valid[Math.floor(Math.random() * valid.length)] : pool[0];
+    lastGhostResponse = chosen;
     return `"${chosen}"`;
   }
 
