@@ -31,6 +31,7 @@ Once loaded, the terminal can be disconnected from the internet entirely. The gh
 ## Demo
 
 - 🟢 **Live Interactive Terminal:** [https://sapnil-m.github.io/SPECTER/](https://sapnil-m.github.io/SPECTER/)
+- 🎥 **Video Demo (Paranormal Manifestation & Audio FX):** [Watch `03-manifest-glitch.mp4` on GitHub](https://github.com/SAPNIL-M/SPECTER/raw/main/docs/03-manifest-glitch.mp4)
 
 *(Tip: Click the `AUDIO: OFF` button in the top header to awaken the 60Hz power hum and mechanical key clacks. Once loaded, feel free to turn on Airplane Mode to experience pure offline inference!)*
 
@@ -108,7 +109,7 @@ During testing, we ran into an interesting domain-adaptation challenge:
 2. **Prioritized Frequency Hierarchy:** We elevated `EMPATHY` (`lonely`, `alone`, `sad`, `grief`) to top priority, while strictly decoupling hostile defiance (`die`, `kill`, `won't you die`) from existential fear (`scared`, `horror`).
 3. **Dynamic Confidence & Anti-Repetition:** The ghost dynamically embeds real-time inference confidence into its dialogue and maintains a session memory buffer so consecutive inputs never receive the same response.
 
-![Paranormal Manifestation Glitch](https://raw.githubusercontent.com/SAPNIL-M/SPECTER/main/docs/03-manifest-glitch.png)
+> 🎥 **[Watch the Paranormal Manifestation & Screen Glitch Video](https://github.com/SAPNIL-M/SPECTER/raw/main/docs/03-manifest-glitch.mp4)**
 
 ---
 

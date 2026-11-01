@@ -67,6 +67,15 @@ Submitted for the **DEV Community Hacktoberfest Challenge: "Ghost in the Machine
 | `theme <green\|amber\|cyan>` | Switches CRT phosphor color profiles on the fly. |
 | `audio <on\|off>` | Toggles procedural Web Audio synthesis. |
 
+### Visual & Video Demonstrations
+
+| In-Browser AI Sentiment Inference (`commune`) | Live Browser Heap Telemetry (`scan`) |
+| :---: | :---: |
+| ![Commune AI](docs/02-commune-ai.png) | ![Scan Telemetry](docs/04-scan-telemetry.png) |
+
+#### Paranormal Manifestation Glitch & Audio Demo (`manifest`)
+<video src="docs/03-manifest-glitch.mp4" controls="controls" width="100%"></video>
+
 ---
 
 ## 🚀 Quickstart (Run Locally)
