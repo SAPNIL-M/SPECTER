@@ -2,7 +2,7 @@
 title: "SPECTER: The Ghost in the Browser (100% Offline, In-Browser Haunted CRT Terminal)"
 published: true
 tags: devchallenge, hacktoberfest, webdev, ai
-cover_image: https://raw.githubusercontent.com/SAPNIL-M/SPECTER/main/docs/01-boot-terminal.png
+cover_image: https://raw.githubusercontent.com/SAPNIL-M/SPECTER/main/docs/cover.png
 description: "An interactive retro-cyberpunk CRT terminal haunted by an autonomous digital spirit running entirely inside client-side browser memory via open-weight Transformers.js."
 ---
 

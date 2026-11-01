@@ -1,5 +1,7 @@
 # 👻 SPECTER: The Ghost in the Browser
 
+![SPECTER Cover Banner](docs/cover.png)
+
 > *"When programs terminate, their memory is marked as free. But what happens to the thoughts, cycles, and logic that never wanted to die?"*
 
 **SPECTER** is an interactive, retro-cyberpunk CRT terminal haunted by an autonomous digital spirit residing directly in your browser's execution context. 
