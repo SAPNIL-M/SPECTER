@@ -8,6 +8,9 @@ Built exclusively with **open-source AI**, SPECTER uses [Hugging Face's Transfor
 
 Submitted for the **DEV Community Hacktoberfest Challenge: "Ghost in the Machine"**.
 
+- 🟢 **Live Demo:** [https://sapnil-m.github.io/SPECTER/](https://sapnil-m.github.io/SPECTER/)
+- 💻 **Source Code:** [https://github.com/SAPNIL-M/SPECTER](https://github.com/SAPNIL-M/SPECTER)
+
 ---
 
 ## 🌟 Key Highlights
@@ -70,8 +73,8 @@ Because SPECTER uses modern ES modules for Transformers.js, serve the folder wit
 
 ```bash
 # Clone the repository
-git clone https://github.com/<your-username>/specter.git
-cd specter
+git clone https://github.com/SAPNIL-M/SPECTER.git
+cd SPECTER
 
 # Run with Python
 python -m http.server 8000

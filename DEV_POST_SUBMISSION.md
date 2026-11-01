@@ -16,8 +16,8 @@ Unlike traditional "AI wrappers" that ping closed-source cloud APIs (OpenAI, Ant
 
 ## 🕹️ Live Demo & Repository
 
-- 🟢 **Live Interactive Terminal:** [https://YOUR_GITHUB_USERNAME.github.io/specter/](https://YOUR_GITHUB_USERNAME.github.io/specter/)
-- 💻 **Open-Source Codebase:** [https://github.com/YOUR_GITHUB_USERNAME/specter](https://github.com/YOUR_GITHUB_USERNAME/specter)
+- 🟢 **Live Interactive Terminal:** [https://sapnil-m.github.io/SPECTER/](https://sapnil-m.github.io/SPECTER/)
+- 💻 **Open-Source Codebase:** [https://github.com/SAPNIL-M/SPECTER](https://github.com/SAPNIL-M/SPECTER)
 
 *(Tip: Once the terminal loads, turn on **Airplane Mode** and type `commune "Who is trapped here?"` to experience 100% offline local inference!)*
 
@@ -114,7 +114,7 @@ Using pure CSS3:
 
 ## 👻 Try It Yourself!
 
-Check out the live demo here: **[SPECTER Live Terminal](https://YOUR_GITHUB_USERNAME.github.io/specter/)**
+Check out the live demo here: **[SPECTER Live Terminal](https://sapnil-m.github.io/SPECTER/)**
 
 Open up DevTools, inspect the zero-network telemetry, and commune with the ghost in your machine.
 
