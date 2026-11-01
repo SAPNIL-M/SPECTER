@@ -136,4 +136,10 @@ Type `scan` to watch the ghost count your actual allocated memory heap. Type `ma
 
 ---
 
+## Prize Categories
+
+- **Overall / Main Track ("Ghost in the Machine"):** SPECTER was custom-engineered from the ground up for the Week 4 prompt—running an autonomous, interactive open-weight AI model directly in local WebAssembly memory to embody a digital entity trapped in uncollected browser heap.
+
+---
+
 *Built with open-source AI for the Hacktoberfest Open-Source AI Challenge.*
